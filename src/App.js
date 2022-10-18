@@ -1,25 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
+import React, { useState,useRef } from 'react'
+import axios from 'axios';
+import './App.css'
+ function App() {
+ const [count , setCount] = useState([{}]);
+ const refValue = useRef(null)
+ const [record,setRecord] = useState([])
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        {
+          count.map((e,index)=>(
+            <form key={index}>
+                <input type="text" ref={refValue} disabled={count.length-1 === index ? false : true}/>
+                <button
+                 type='submit'
+                onClick={(e)=>{
+                  e.preventDefault()
+                  setCount((pre)=>{
+                     setRecord(pre)
+                     
+                    return[...pre,{}]
+                  })
+                   const dataValue = {
+                     title: refValue.current.value
+                   }    
+                   const formData =  new FormData()
+                   formData.append("data",JSON.stringify(dataValue))
+
+                   axios({
+                    url:"http://127.0.0.1:8000/data",
+                    method:"post",
+                    data:formData
+                   }).then(function(res){
+                       console.log(res)
+                   })
+                  console.log(refValue.current.value)
+                }}
+                disabled={count.length-1 === index ? false : true}
+                >
+                   click
+                </button>
+            </form>
+          ))
+        }
     </div>
   );
 }
 
-export default App;
+export default App
